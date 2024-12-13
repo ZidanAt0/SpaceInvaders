@@ -18,4 +18,13 @@ public class Explosion extends GameObject {
     public int getAnimationCounter() {
         return animationCounter;
     }
+
+    @Override
+    public void update() {
+        animationCounter++;
+        if (animationCounter >= ANIMATION_SPEED) {
+            step++;
+            animationCounter = 0;
+        }
+    }
 }
