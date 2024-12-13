@@ -1,4 +1,3 @@
-
 package sgame;
 
 import javafx.animation.AnimationTimer;
@@ -10,6 +9,7 @@ import javafx.scene.layout.AnchorPane;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.scene.paint.Color;
 
@@ -29,11 +29,22 @@ public class GameMainController implements Initializable {
     private List<Explosion> explosions;
     private boolean gameOver;
 
+    private static final int INITIAL_SPAWN_INTERVAL = 200;
+    private static final int MIN_SPAWN_INTERVAL = 50;
+    private static final int SPAWN_SPEEDUP_THRESHOLD = 10;
+    private static final int SPAWN_INTERVAL_DECREASE = 30;
+
+    private Random random;
+    private int currentSpawnInterval;
+    private int spawnCounter;
+    private int score;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initializeGameElements();
         setupCanvas();
         setupControls();
+        setupEnemySystem();
         startGameLoop();
     }
 
@@ -88,9 +99,14 @@ public class GameMainController implements Initializable {
     }
 
     private void updateGameState() {
+        updateSpawnInterval();
+        handleEnemySpawning();
+        
         player.update();
         enemies.forEach(Enemy::update);
         updateBullets();
+        
+        enemies.forEach(this::handleEnemyShooting);
     }
 
     private void shootPlayerBullet() {
@@ -109,8 +125,35 @@ public class GameMainController implements Initializable {
             bullet.update();
             return bullet.isOffScreen(CANVAS_HEIGHT);
         });
+
+        enemyBullets.removeIf(bullet -> {
+            bullet.update();
+            return bullet.isOffScreen(CANVAS_HEIGHT);
+        });
     }
 
+    private void setupEnemySystem() {
+        random = new Random();
+        currentSpawnInterval = INITIAL_SPAWN_INTERVAL;
+        spawnCounter = 0;
+        score = 0;
+    }
+
+    private void updateSpawnInterval() {
+        int speedupLevel = score / SPAWN_SPEEDUP_THRESHOLD;
+        int newInterval = INITIAL_SPAWN_INTERVAL - (speedupLevel * SPAWN_INTERVAL_DECREASE);
+        currentSpawnInterval = Math.max(newInterval, MIN_SPAWN_INTERVAL);
+    }
+
+    private void handleEnemySpawning() {
+        if (spawnCounter++ >= currentSpawnInterval) {
+            spawnEnemy();
+            spawnCounter = 0;
+        }
+        
+        enemies.removeIf(enemy -> enemy.getY() > CANVAS_HEIGHT);
+    }
+    
     private void drawGameElements() {
 
     }
