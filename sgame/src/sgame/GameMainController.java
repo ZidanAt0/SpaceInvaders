@@ -160,6 +160,16 @@ public class GameMainController implements Initializable {
                (char1.getY() + char1.getHeight() - hitboxOffset1Y) > (char2.getY() + hitboxOffset2Y);
     }
 
+    private boolean isBulletColliding(Bullet bullet, Character character) {
+        double hitboxOffsetX = (character.getWidth() - character.getHitboxWidth()) / 2;
+        double hitboxOffsetY = (character.getHeight() - character.getHitboxHeight()) / 2;
+
+        return bullet.getX() < (character.getX() + character.getWidth() - hitboxOffsetX) &&
+               (bullet.getX() + bullet.getWidth()) > (character.getX() + hitboxOffsetX) &&
+               bullet.getY() < (character.getY() + character.getHeight() - hitboxOffsetY) &&
+               (bullet.getY() + bullet.getHeight()) > (character.getY() + hitboxOffsetY);
+    }
+
 
     private void shootPlayerBullet() {
         Bullet bullet = new Bullet(
