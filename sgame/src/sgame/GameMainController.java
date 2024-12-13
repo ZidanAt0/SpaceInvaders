@@ -138,6 +138,14 @@ public class GameMainController implements Initializable {
                 }
             }
         }
+
+        enemyBullets.removeIf(bullet -> {
+            if (isBulletColliding(bullet, player)) {
+                handlePlayerCollision(20);
+                return true;
+            }
+            return false;
+        });
     }
 
     private void shootPlayerBullet() {
