@@ -1,5 +1,3 @@
-
-
 package sgame;
 
 import javafx.animation.AnimationTimer;
@@ -160,6 +158,19 @@ public class GameMainController implements Initializable {
         double enemyX = random.nextDouble() * (CANVAS_WIDTH - 40);
         Enemy enemy = new Enemy(enemyX, 0, null);
         enemies.add(enemy);
+    }
+
+    private void handleEnemyShooting(Enemy enemy) {
+        if (random.nextInt(240) == 0) {
+            Bullet bullet = new Bullet(
+                enemy.getX() + enemy.getWidth() / 2,
+                enemy.getY() + enemy.getHeight(),
+                Color.YELLOW,
+                1.5,
+                true
+            );
+            enemyBullets.add(bullet);
+        }
     }
 
     private void drawGameElements() {
