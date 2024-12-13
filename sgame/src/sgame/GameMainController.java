@@ -1,3 +1,5 @@
+
+
 package sgame;
 
 import javafx.animation.AnimationTimer;
@@ -153,7 +155,13 @@ public class GameMainController implements Initializable {
         
         enemies.removeIf(enemy -> enemy.getY() > CANVAS_HEIGHT);
     }
-    
+
+    private void spawnEnemy() {
+        double enemyX = random.nextDouble() * (CANVAS_WIDTH - 40);
+        Enemy enemy = new Enemy(enemyX, 0, null);
+        enemies.add(enemy);
+    }
+
     private void drawGameElements() {
 
     }
