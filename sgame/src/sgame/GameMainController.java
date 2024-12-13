@@ -1,3 +1,4 @@
+
 package sgame;
 
 import javafx.animation.AnimationTimer;
@@ -10,6 +11,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.scene.paint.Color;
 
 public class GameMainController implements Initializable {
     @FXML
@@ -31,6 +33,7 @@ public class GameMainController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         initializeGameElements();
         setupCanvas();
+        setupControls();
         startGameLoop();
     }
 
@@ -63,10 +66,49 @@ public class GameMainController implements Initializable {
             }
         }.start();
     }
+    
+    private void setupControls() {
+        gamePane.setOnMouseMoved(event -> {
+            if (player.isAlive() && !gameOver) {
+                double newX = Math.min(CANVAS_WIDTH - player.getWidth() / 2, 
+                                     Math.max(player.getWidth() - 85, event.getX() - player.getWidth() / 1.5));
+                double newY = Math.min(CANVAS_HEIGHT - player.getHeight() - 10, 
+                                     Math.max((2.0 / 3.0) * CANVAS_HEIGHT, event.getY() - player.getHeight() / 2));
+                player.setX(newX);
+                player.setY(newY);
+            }
+        });
+
+        gamePane.setOnMouseClicked(event -> {
+            if (!gameOver && player.isAlive()) {
+                shootPlayerBullet();
+            }
+        });
+        gamePane.setFocusTraversable(true);
+    }
 
     private void updateGameState() {
         player.update();
         enemies.forEach(Enemy::update);
+        updateBullets();
+    }
+
+    private void shootPlayerBullet() {
+        Bullet bullet = new Bullet(
+            player.getX() + player.getWidth() / 2 - 2.5,
+            player.getY() - 5,
+            Color.RED,
+            5,
+            false
+        );
+        playerBullets.add(bullet);
+    }
+
+    private void updateBullets() {
+        playerBullets.removeIf(bullet -> {
+            bullet.update();
+            return bullet.isOffScreen(CANVAS_HEIGHT);
+        });
     }
 
     private void drawGameElements() {
