@@ -170,6 +170,25 @@ public class GameMainController implements Initializable {
                (bullet.getY() + bullet.getHeight()) > (character.getY() + hitboxOffsetY);
     }
 
+    private void handlePlayerCollision(double damage) {
+        if (!player.isInvulnerable()) {
+            player.takeDamage(damage);
+            if (!player.isAlive()) {
+                createExplosion(player.getX(), player.getY(), player.getWidth());
+                gameOver = true;
+            }
+        }
+    }
+
+    private void createExplosion(double x, double y, double size) {
+        
+    }
+
+    private void updateExplosions() {
+        
+    }
+
+
 
     private void shootPlayerBullet() {
         Bullet bullet = new Bullet(
