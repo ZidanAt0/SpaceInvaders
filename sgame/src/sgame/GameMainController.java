@@ -101,12 +101,43 @@ public class GameMainController implements Initializable {
     private void updateGameState() {
         updateSpawnInterval();
         handleEnemySpawning();
+
+        if (player.isAlive()) {
+            checkCollisions();
+        }
         
         player.update();
         enemies.forEach(Enemy::update);
         updateBullets();
         
         enemies.forEach(this::handleEnemyShooting);
+    }
+
+    private void checkCollisions() {
+        enemies.removeIf(enemy -> {
+            if (isColliding(player, enemy)) {
+                handlePlayerCollision(20);
+                createExplosion(enemy.getX(), enemy.getY(), enemy.getWidth());
+                return true;
+            }
+            if (enemy.getY() > CANVAS_HEIGHT) {
+                handlePlayerCollision(10);
+                return true;
+            }
+            return false;
+        });
+
+        for (Bullet bullet : new ArrayList<>(playerBullets)) {
+            for (Enemy enemy : new ArrayList<>(enemies)) {
+                if (isBulletColliding(bullet, enemy)) {
+                    playerBullets.remove(bullet);
+                    enemies.remove(enemy);
+                    createExplosion(enemy.getX(), enemy.getY(), enemy.getWidth());
+                    score++;
+                    break;
+                }
+            }
+        }
     }
 
     private void shootPlayerBullet() {
