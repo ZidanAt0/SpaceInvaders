@@ -181,11 +181,14 @@ public class GameMainController implements Initializable {
     }
 
     private void createExplosion(double x, double y, double size) {
-        
+        explosions.add(new Explosion(x, y, size));
     }
 
     private void updateExplosions() {
-        
+        explosions.removeIf(explosion -> {
+            explosion.update();
+            return explosion.isFinished();
+        });
     }
 
 
