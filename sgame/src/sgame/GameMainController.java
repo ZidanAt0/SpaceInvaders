@@ -1,4 +1,3 @@
-
 package sgame;
 
 import javafx.animation.AnimationTimer;
@@ -119,10 +118,13 @@ public class GameMainController implements Initializable {
         });
 
         gamePane.setOnMouseClicked(event -> {
-            if (!gameOver && player.isAlive()) {
+            if (gameOver) {
+                restartGame();
+            } else if (player.isAlive()) {
                 shootPlayerBullet();
             }
         });
+
         gamePane.setFocusTraversable(true);
     }
 
@@ -355,5 +357,22 @@ public class GameMainController implements Initializable {
         }
     }
 
-}
+    private void restartGame() {
+        score = 0;
+        gameOver = false;
+        
+        player = new Player((CANVAS_WIDTH - 70) / 2, CANVAS_HEIGHT - 80);
+        player.setSprites(playerFrames);
 
+        enemies.clear();
+        playerBullets.clear();
+        enemyBullets.clear();
+        explosions.clear();
+        
+        currentSpawnInterval = INITIAL_SPAWN_INTERVAL;
+        spawnCounter = 0;
+    }
+
+
+
+}
