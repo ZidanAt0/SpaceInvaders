@@ -23,5 +23,5 @@ public class Enemy extends Character {
     @Override
     public void handleCollision() {
         setAlive(false);
-    }
+    }
 }
