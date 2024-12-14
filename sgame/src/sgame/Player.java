@@ -30,6 +30,17 @@ public class Player extends Character {
         if (!isInvulnerable) {
             isInvulnerable = true;
             invulnerabilityTimer = System.nanoTime();
-        }
-    }
+        }
+    }
+    
+    public void takeDamage(double damage) {
+        if (!isInvulnerable) {
+            health -= damage;
+            if (health <= 0) {
+                health = 0;
+                setAlive(false);
+            }
+            handleCollision();
+        }
+    }
 }
