@@ -299,10 +299,31 @@ public class GameMainController implements Initializable {
             }
         }
 
+        enemies.forEach(enemy -> gc.drawImage(enemy.getImage(), 
+                                            enemy.getX(), enemy.getY(), 
+                                            enemy.getWidth(), enemy.getHeight()));
+
+        drawBullets(playerBullets);
+        drawBullets(enemyBullets);
+
+        drawExplosions();
+
         drawHealthBar();
         drawScore();
 
     }
+
+    private void drawBullets(List<Bullet> bullets) {
+        bullets.forEach(bullet -> {
+            gc.setFill(bullet.getColor());
+            gc.fillOval(bullet.getX(), bullet.getY(), bullet.getWidth(), bullet.getHeight());
+        });
+    }
+
+    private void drawExplosions(){
+        
+    }
+
 
     private void drawHealthBar() {
         final double HEALTHBAR_WIDTH = 150;
