@@ -1,3 +1,4 @@
+
 package sgame;
 
 import javafx.animation.AnimationTimer;
@@ -201,6 +202,7 @@ public class GameMainController implements Initializable {
             }
             if (enemy.getY() > CANVAS_HEIGHT) {
                 handlePlayerCollision(10);
+                playSound(enemyEscapePlayer);
                 return true;
             }
             return false;
@@ -213,6 +215,7 @@ public class GameMainController implements Initializable {
                     enemies.remove(enemy);
                     createExplosion(enemy.getX(), enemy.getY(), enemy.getWidth());
                     score++;
+                    playSound(enemyDeathPlayer);
                     break;
                 }
             }
@@ -252,6 +255,7 @@ public class GameMainController implements Initializable {
     private void handlePlayerCollision(double damage) {
         if (!player.isInvulnerable()) {
             player.takeDamage(damage);
+            playSound(playerHitPlayer);
             if (!player.isAlive()) {
                 createExplosion(player.getX(), player.getY(), player.getWidth());
                 gameOver = true;
@@ -279,6 +283,7 @@ public class GameMainController implements Initializable {
             false
         );
         playerBullets.add(bullet);
+        playSound(laserPlayer);
     }
 
     private void updateBullets() {
@@ -447,8 +452,11 @@ public class GameMainController implements Initializable {
         
         currentSpawnInterval = INITIAL_SPAWN_INTERVAL;
         spawnCounter = 0;
+
+        if (bgmPlayer != null) {
+            bgmPlayer.seek(Duration.ZERO);
+            bgmPlayer.play();
+        }
     }
-
-
 
 }
