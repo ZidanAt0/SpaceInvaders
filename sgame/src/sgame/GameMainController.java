@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class GameMainController implements Initializable {
@@ -35,13 +36,20 @@ public class GameMainController implements Initializable {
     private static final int SPAWN_INTERVAL_DECREASE = 30;
 
     private Random random;
+    private Image[] enemyImages;
+    private Image[] playerFrames;
+    private Image explosionImage;
+    
     private int currentSpawnInterval;
     private int spawnCounter;
+
+    private static int highScore = 0;
     private int score;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initializeGameElements();
+        loadResources();
         setupCanvas();
         setupControls();
         setupEnemySystem();
@@ -58,6 +66,20 @@ public class GameMainController implements Initializable {
         gameOver = false;
     }
 
+    private void loadResources() {
+        enemyImages = new Image[5];
+        for (int i = 0; i < 5; i++) {
+            enemyImages[i] = new Image(getClass().getResource("/sgame/asset/" + (i + 1) + ".png").toExternalForm());
+        }
+
+        playerFrames = new Image[6];
+        for (int i = 0; i < 6; i++) {
+            playerFrames[i] = new Image(getClass().getResource("/sgame/Player/Player_frame_" + (i + 1) + ".png").toExternalForm());
+        }
+        player.setSprites(playerFrames);
+        explosionImage = new Image(getClass().getResource("/sgame/asset/explosion.png").toExternalForm());
+    }
+
     private void setupCanvas() {
         gameCanvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
         gamePane.getChildren().add(gameCanvas);
@@ -69,11 +91,14 @@ public class GameMainController implements Initializable {
             @Override
             public void handle(long now) {
                 gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                
-                if (!gameOver) {
-                    updateGameState();
-                    drawGameElements();
+
+                if (gameOver) {
+                    drawGameOver();
+                    return;
                 }
+                updateGameState();
+                checkCollisions();
+                drawGameElements();
             }
         }.start();
     }
@@ -114,6 +139,10 @@ public class GameMainController implements Initializable {
     }
 
     private void checkCollisions() {
+        if (!player.isAlive()) {
+            return;
+        }
+
         enemies.removeIf(enemy -> {
             if (isColliding(player, enemy)) {
                 handlePlayerCollision(20);
@@ -191,8 +220,6 @@ public class GameMainController implements Initializable {
         });
     }
 
-
-
     private void shootPlayerBullet() {
         Bullet bullet = new Bullet(
             player.getX() + player.getWidth() / 2 - 2.5,
@@ -240,7 +267,7 @@ public class GameMainController implements Initializable {
 
     private void spawnEnemy() {
         double enemyX = random.nextDouble() * (CANVAS_WIDTH - 40);
-        Enemy enemy = new Enemy(enemyX, 0, null);
+        Enemy enemy = new Enemy(enemyX, 0, enemyImages[random.nextInt(enemyImages.length)]);
         enemies.add(enemy);
     }
 
@@ -258,6 +285,50 @@ public class GameMainController implements Initializable {
     }
 
     private void drawGameElements() {
+        if (player.isAlive()) {
+            if (!player.isInvulnerable() || (System.nanoTime() / 100_000_000) % 2 == 0) {
+                gc.drawImage(player.getSprites()[player.getCurrentFrame()], 
+                           player.getX(), player.getY(), 
+                           player.getWidth(), player.getHeight());
+                player.setCurrentFrame((player.getCurrentFrame() + 1) % player.getSprites().length);
+            }
+        }
+
+        drawHealthBar();
+        drawScore();
 
     }
+
+    private void drawHealthBar() {
+        final double HEALTHBAR_WIDTH = 150;
+        final double HEALTHBAR_HEIGHT = 20;
+        final double HEALTHBAR_X = 13;
+        final double HEALTHBAR_Y = 17;
+
+        gc.setFill(Color.BLACK);
+        gc.fillRect(HEALTHBAR_X - 3, HEALTHBAR_Y - 3, 
+                   HEALTHBAR_WIDTH + 6, HEALTHBAR_HEIGHT + 6);
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(2);
+        gc.strokeRect(HEALTHBAR_X - 2, HEALTHBAR_Y - 2, 
+                     HEALTHBAR_WIDTH + 4, HEALTHBAR_HEIGHT + 4);
+
+        double healthPercentage = player.getHealth() / player.getMaxHealth();
+        double healthBarWidth = HEALTHBAR_WIDTH * healthPercentage;
+
+        gc.setFill(Color.RED);
+        gc.fillRect(HEALTHBAR_X, HEALTHBAR_Y, HEALTHBAR_WIDTH, HEALTHBAR_HEIGHT);
+        gc.setFill(Color.GREEN);
+        gc.fillRect(HEALTHBAR_X, HEALTHBAR_Y, healthBarWidth, HEALTHBAR_HEIGHT);
+    }
+
+    private void drawGameOver(){
+
+    }
+
+    private void drawScore(){
+
+    }
+
+
 }
