@@ -321,7 +321,17 @@ public class GameMainController implements Initializable {
     }
 
     private void drawExplosions(){
-        
+        final int EXPLOSION_W = 128;
+        final int EXPLOSION_H = 128;
+        final int EXPLOSION_COL = 3;
+
+        explosions.forEach(explosion -> {
+            int row = explosion.getStep() / EXPLOSION_COL;
+            int col = explosion.getStep() % EXPLOSION_COL;
+            gc.drawImage(explosionImage,
+                col * EXPLOSION_W, row * EXPLOSION_H, EXPLOSION_W, EXPLOSION_H,
+                explosion.getX(), explosion.getY(), explosion.getWidth(), explosion.getHeight());
+        });
     }
 
 
