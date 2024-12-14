@@ -1,9 +1,17 @@
 package sgame;
 
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class MenuController implements Initializable {
     private MediaPlayer mediaPlayer;
@@ -15,7 +23,6 @@ public class MenuController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            // Initialize menu background music
             Media menuSound = new Media(getClass().getResource("/sgame/sfx/menu.mp3").toExternalForm());
             mediaPlayer = new MediaPlayer(menuSound);
             mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
