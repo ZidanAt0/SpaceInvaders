@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="gamePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sgame.GameMainController">
+   <children>
+      <ImageView fitHeight="846.0" fitWidth="663.0" layoutY="-77.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../scenebuilderIMAGE/freepik__candid-image-photography-natural-textures-highly-r__409.jpeg" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>
