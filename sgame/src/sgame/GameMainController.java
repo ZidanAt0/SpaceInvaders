@@ -139,6 +139,7 @@ public class GameMainController implements Initializable {
         player.update();
         enemies.forEach(Enemy::update);
         updateBullets();
+        updateExplosions();
         
         enemies.forEach(this::handleEnemyShooting);
     }
