@@ -1,3 +1,4 @@
+
 package sgame;
 
 import javafx.animation.AnimationTimer;
@@ -13,6 +14,8 @@ import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class GameMainController implements Initializable {
     @FXML
@@ -323,12 +326,34 @@ public class GameMainController implements Initializable {
     }
 
     private void drawGameOver(){
+        gc.setFill(new Color(0, 0, 0, 0.5));
+        gc.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
+        updateHighScore(score);
+
+        gc.setFont(Font.font("Arial", 40));
+        gc.setFill(Color.WHITE);
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        gc.fillText("Game Over", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 40);
+        gc.fillText("Score: " + score, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 20);
+        gc.fillText("High Score: " + highScore, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 60);
+        
+        gc.setFont(Font.font("Arial", 20));
+        gc.fillText("Click to Play Again", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 100);
     }
 
     private void drawScore(){
-
+        gc.setFill(Color.WHITE);
+        gc.setFont(new Font("Arial", 20));
+        gc.fillText("Score: " + score, 10, 60);
     }
 
+    private static void updateHighScore(int currentScore) {
+        if (currentScore > highScore) {
+            highScore = currentScore;
+        }
+    }
 
 }
+
