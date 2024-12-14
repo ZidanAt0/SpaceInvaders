@@ -7,7 +7,7 @@ public class Explosion extends GameObject {
     private final int MAX_STEPS = 15;
 
     public Explosion(double x, double y, double size) {
-        super(x, y, size, size);
+        super(x - size/4, y - size/4, size * 1.2 , size *1.2);
         this.step = 0;
         this.animationCounter = 0;
     }
@@ -26,5 +26,9 @@ public class Explosion extends GameObject {
             step++;
             animationCounter = 0;
         }
+    }
+
+    public boolean isFinished(){
+        return step >= MAX_STEPS;
     }
 }
