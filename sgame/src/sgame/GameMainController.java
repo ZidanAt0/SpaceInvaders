@@ -15,6 +15,9 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 public class GameMainController implements Initializable {
     @FXML
@@ -48,6 +51,12 @@ public class GameMainController implements Initializable {
     private static int highScore = 0;
     private int score;
 
+    private MediaPlayer bgmPlayer;
+    private MediaPlayer laserPlayer;
+    private MediaPlayer enemyDeathPlayer;
+    private MediaPlayer playerHitPlayer;
+    private MediaPlayer enemyEscapePlayer;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initializeGameElements();
@@ -55,6 +64,7 @@ public class GameMainController implements Initializable {
         setupCanvas();
         setupControls();
         setupEnemySystem();
+        setupSoundEffects();
         startGameLoop();
     }
 
@@ -127,6 +137,40 @@ public class GameMainController implements Initializable {
 
         gamePane.setFocusTraversable(true);
     }
+
+    private void setupSoundEffects() {
+        String[] sounds = {"/sgame/sfx/pixi.mp3", "/sgame/sfx/laser.mp3", 
+                          "/sgame/sfx/deathenemy.mp3", "/sgame/sfx/deathplayer.mp3", 
+                          "/sgame/sfx/enemyrun.mp3"};
+        
+        bgmPlayer = createMediaPlayer(sounds[0], 0.5, true);
+        laserPlayer = createMediaPlayer(sounds[1], 0.3, false);
+        enemyDeathPlayer = createMediaPlayer(sounds[2], 0.3, false);
+        playerHitPlayer = createMediaPlayer(sounds[3], 0.5, false);
+        enemyEscapePlayer = createMediaPlayer(sounds[4], 0.3, false);
+
+        bgmPlayer.play();
+    }
+
+    private MediaPlayer createMediaPlayer(String resourcePath, double volume, boolean loop) {
+        Media media = new Media(getClass().getResource(resourcePath).toExternalForm());
+        MediaPlayer player = new MediaPlayer(media);
+        player.setVolume(volume);
+        if (loop) {
+            player.setOnEndOfMedia(() -> player.seek(Duration.ZERO));
+        }
+        return player;
+    }
+
+    private void playSound(MediaPlayer player) {
+        if (player != null) {
+            player.stop();
+            player.seek(Duration.ZERO);
+            player.play();
+        }
+    }
+
+
 
     private void updateGameState() {
         updateSpawnInterval();
